@@ -75,7 +75,7 @@ class HomeViewModel : ViewModel() {
             val allDays = dayJobs.awaitAll()
 
             // aktualizuj seznam po načtení všech dní
-            rowNamedays.postValue(list)
+            rowNamedays.postValue(allDays)
         }
     }
 
