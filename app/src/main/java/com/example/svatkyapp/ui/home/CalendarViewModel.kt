@@ -8,6 +8,9 @@ import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import com.example.svatkyapp.data.NamedayApiService
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
 data class DayEntry(
     val dateDisplay: String, // "DD.MM.YYYY"
@@ -25,6 +28,7 @@ class HomeViewModel : ViewModel() {
     val rowNamedays = MutableLiveData<List<DayEntry>>(emptyList())
     private val czFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
     private val apiFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    private var loadMonthJob: Job? = null
 
     init {
         loadTodayNameday()
@@ -55,20 +59,20 @@ class HomeViewModel : ViewModel() {
         val year = LocalDate.now().year
         val daysInMonth = YearMonth.of(year, month).lengthOfMonth()
 
-        viewModelScope.launch {
-            val list = mutableListOf<DayEntry>()
+        // vyčisti seznam nebo zruší načítání
+        rowNamedays.value = emptyList()
+        loadMonthJob?.cancel()
 
-            for (day in 1..daysInMonth) {
+        loadMonthJob  = viewModelScope.launch {
+            val dayJobs = (1..daysInMonth).map { day -> async {
                 val d = LocalDate.of(year, month, day)
-                val dateDisplay = d.format(czFormatter)
-                val formatted = d.format(DateTimeFormatter.ISO_DATE) // "2025-10-22"
-
-                // načteme jméno z API
-                val apiName = NamedayApiService.getNamedayForDate(formatted)
-                val name = apiName?.takeIf { it.isNotEmpty() } ?: "Nenalezeno"
-
-                list.add(DayEntry(dateDisplay, name))
-            }
+                val displayDate = d.format(czFormatter)
+                val isoDate = d.format(DateTimeFormatter.ISO_DATE)
+                val apiName = NamedayApiService.getNamedayForDate(isoDate)
+                val finalName = apiName?.takeIf { it.isNotEmpty() } ?: "Nenalezeno"
+                DayEntry(dateDisplay = displayDate, name = finalName)
+            }}
+            val allDays = dayJobs.awaitAll()
 
             // aktualizuj seznam po načtení všech dní
             rowNamedays.postValue(list)
