@@ -1,20 +1,22 @@
 package com.example.svatkyapp.ui.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import java.time.LocalDate
-import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import com.example.svatkyapp.data.NamedayApiService
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
 
 data class DayEntry(
-    val dateDisplay: String, // "DD.MM.YYYY"
-    val name: String         // "Martin"
+    val dateDisplay: String,
+    val name: String
 )
 
 class HomeViewModel : ViewModel() {
@@ -26,18 +28,17 @@ class HomeViewModel : ViewModel() {
     val showRowView = MutableLiveData(false)
 
     val rowNamedays = MutableLiveData<List<DayEntry>>(emptyList())
+    @RequiresApi(Build.VERSION_CODES.O)
     private val czFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    @RequiresApi(Build.VERSION_CODES.O)
     private val apiFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private var loadMonthJob: Job? = null
 
     init {
         loadTodayNameday()
-        loadLinearNamedays(LocalDate.now().monthValue)
-    }
-
-    fun toggleView() {
-        val newState = !(showRowView.value ?: false)
-        showRowView.value = newState
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            loadLinearNamedays(LocalDate.now().monthValue)
+        }
     }
 
     fun loadTodayNameday() {
@@ -47,6 +48,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun onDateSelected(date: LocalDate) {
         val formatted = date.format(apiFormatter) // např. "2025-06-14"
         viewModelScope.launch {
@@ -55,6 +57,7 @@ class HomeViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun loadLinearNamedays(month: Int) {
         val year = LocalDate.now().year
         val daysInMonth = YearMonth.of(year, month).lengthOfMonth()
@@ -63,18 +66,18 @@ class HomeViewModel : ViewModel() {
         rowNamedays.value = emptyList()
         loadMonthJob?.cancel()
 
-        loadMonthJob  = viewModelScope.launch {
-            val dayJobs = (1..daysInMonth).map { day -> async {
-                val d = LocalDate.of(year, month, day)
-                val displayDate = d.format(czFormatter)
-                val isoDate = d.format(DateTimeFormatter.ISO_DATE)
-                val apiName = NamedayApiService.getNamedayForDate(isoDate)
-                val finalName = apiName?.takeIf { it.isNotEmpty() } ?: "Nenalezeno"
-                DayEntry(dateDisplay = displayDate, name = finalName)
-            }}
+        loadMonthJob = viewModelScope.launch {
+            val dayJobs = (1..daysInMonth).map { day ->
+                async {
+                    val d = LocalDate.of(year, month, day)
+                    val displayDate = d.format(czFormatter)
+                    val isoDate = d.format(DateTimeFormatter.ISO_DATE)
+                    val apiName = NamedayApiService.getNamedayForDate(isoDate)
+                    val finalName = apiName?.takeIf { it.isNotEmpty() } ?: "Nenalezeno"
+                    DayEntry(dateDisplay = displayDate, name = finalName)
+                }
+            }
             val allDays = dayJobs.awaitAll()
-
-            // aktualizuj seznam po načtení všech dní
             rowNamedays.postValue(allDays)
         }
     }
