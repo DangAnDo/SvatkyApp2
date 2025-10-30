@@ -1,42 +1,49 @@
 package com.example.svatkyapp.ui.home
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.DatePicker
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.example.svatkyapp.databinding.FragmentHomeBinding
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import com.example.svatkyapp.R
+import java.time.LocalDate
 
 class HomeFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private val viewModel: HomeViewModel by viewModels()
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    private lateinit var datePicker: DatePicker
+    private lateinit var textNamedayValue: TextView
 
+    @RequiresApi(Build.VERSION_CODES.O) // kvůli java.time.LocalDate
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+        val root = inflater.inflate(R.layout.fragment_home, container, false)
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        datePicker = root.findViewById(R.id.date_picker)
+        textNamedayValue = root.findViewById(R.id.text_nameday_value)
+
+        // Když uživatel změni datum v kalendáři
+        datePicker.setOnDateChangedListener { _, year, monthOfYear, dayOfMonth ->
+            val selected = LocalDate.of(year, monthOfYear + 1, dayOfMonth)
+            viewModel.onDateSelected(selected)
         }
-        return root
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+        // Posloucháme LiveData z ViewModelu a zobrazíme text
+        viewModel.namedayToday.observe(viewLifecycleOwner, Observer { name ->
+            textNamedayValue.text = name ?: "..."
+        })
+
+        return root
     }
 }
