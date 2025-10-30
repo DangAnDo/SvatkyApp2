@@ -2,9 +2,12 @@ package com.example.svatkyapp.ui.home
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import com.example.svatkyapp.data.NamedayApiService
+import kotlinx.coroutines.launch
 
 data class DayEntry(
     val dateDisplay: String, // "DD.MM.YYYY"
@@ -21,6 +24,7 @@ class HomeViewModel : ViewModel() {
 
     val rowNamedays = MutableLiveData<List<DayEntry>>(emptyList())
     private val czFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    private val apiFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
     init {
         loadTodayNameday()
@@ -33,30 +37,42 @@ class HomeViewModel : ViewModel() {
     }
 
     fun loadTodayNameday() {
-        // TODO: později nahradíme voláním API getTodayNameday()
-        namedayToday.value = "Martin"
+        viewModelScope.launch {
+            val nameFromApi = NamedayApiService.getNamedayToday()
+            namedayToday.postValue(nameFromApi ?: "Nenalezeno")
+        }
     }
 
     fun onDateSelected(date: LocalDate) {
-        // TODO: tady pak použijeme API getNamedayForDate(dateISO)
-        namedayToday.value = "Jméno pro ${date.dayOfMonth}. den"
+        val formatted = date.format(apiFormatter) // např. "2025-06-14"
+        viewModelScope.launch {
+            val nameFromApi = NamedayApiService.getNamedayForDate(formatted)
+            namedayToday.postValue(nameFromApi ?: "Nenalezeno")
+        }
     }
 
     fun loadLinearNamedays(month: Int) {
         val year = LocalDate.now().year
         val daysInMonth = YearMonth.of(year, month).lengthOfMonth()
 
-        val list = mutableListOf<DayEntry>()
-        for (day in 1..daysInMonth) {
-            val d = LocalDate.of(year, month, day)
-            val dateDisplay = d.format(czFormatter)
-            val mockName = "Jméno $day" // TODO: nahradíme API daty
+        viewModelScope.launch {
+            val list = mutableListOf<DayEntry>()
 
-            list.add(DayEntry(dateDisplay, mockName))
+            for (day in 1..daysInMonth) {
+                val d = LocalDate.of(year, month, day)
+                val dateDisplay = d.format(czFormatter)
+                val formatted = d.format(DateTimeFormatter.ISO_DATE) // "2025-10-22"
+
+                // načteme jméno z API
+                val apiName = NamedayApiService.getNamedayForDate(formatted)
+                val name = apiName?.takeIf { it.isNotEmpty() } ?: "Nenalezeno"
+
+                list.add(DayEntry(dateDisplay, name))
+            }
+
+            // aktualizuj seznam po načtení všech dní
+            rowNamedays.postValue(list)
         }
-
-        // výsledek seřadíme podle data (už je to ve stoupajícím pořadí, takže není nutné sortit)
-        rowNamedays.value = list
     }
 
     fun monthNameCz(month: Int): String {

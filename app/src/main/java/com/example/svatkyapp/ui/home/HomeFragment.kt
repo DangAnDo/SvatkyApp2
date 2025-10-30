@@ -75,9 +75,9 @@ class HomeFragment : Fragment() {
         }
 
         // Posloucháme LiveData z ViewModelu a zobrazíme text
-        viewModel.namedayToday.observe(viewLifecycleOwner, Observer { name ->
+        viewModel.namedayToday.observe(viewLifecycleOwner) { name ->
             textNamedayValue.text = name ?: "..."
-        })
+        }
 
         viewModel.rowNamedays.observe(viewLifecycleOwner, Observer { list ->
             adapter.submitList(list)
