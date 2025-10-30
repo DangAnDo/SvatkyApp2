@@ -1,22 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/calendar_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="top|center_horizontal">
 
-    <TextView
-        android:id="@+id/text_home"
+    <!-- wrapper pro klasický kalendář -->
+    <LinearLayout
+        android:id="@+id/calendar_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="30dp" />
+
+        <!-- BLOK: klasický kalendářní režim -->
+        <LinearLayout
+            android:id="@+id/block_calendar_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <DatePicker
+                android:id="@+id/date_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:calendarViewShown="true"
+                android:spinnersShown="false" />
+
+            <TextView
+                android:id="@+id/text_nameday_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Svátek má:"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:paddingTop="16dp"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:id="@+id/text_nameday_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:textStyle="bold"
+                android:textSize="22sp"
+                android:paddingTop="4dp"
+                android:gravity="center_horizontal" />
+
+            <!-- Tlačítko pro přepnutí DO řádkového režimu -->
+            <Button
+                android:id="@+id/btn_show_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zobrazit řádkový kalendář"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="#000000"
+                android:textColor="#FFFFFF"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- BLOK: řádkový kalendář -->
+    <LinearLayout
+        android:id="@+id/block_list_mode"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:paddingTop="16dp">
+
+        <!-- header řádkového režimu -->
+        <LinearLayout
+            android:id="@+id/list_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/text_select_month"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vyber měsíc:"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:paddingBottom="8dp"
+                android:textColor="#000000" />
+
+            <!-- horizontální pás měsíců -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:overScrollMode="never"
+                android:paddingBottom="8dp">
+
+                <LinearLayout
+                    android:id="@+id/month_buttons_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp" />
+            </HorizontalScrollView>
+
+            <!-- Tlačítko zpět do klasického kalendáře -->
+            <Button
+                android:id="@+id/btn_show_calendar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zobrazit klasický kalendář"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#000000"
+                android:textColor="#FFFFFF"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:fontFamily="sans-serif-medium" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_days"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+
+</LinearLayout>
