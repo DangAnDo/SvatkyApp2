@@ -97,6 +97,9 @@ class HomeFragment : Fragment() {
         // smažeme stará tlačítka, kdyby se to volalo víckrát
         monthButtonsContainer.removeAllViews()
 
+        val density = resources.displayMetrics.density
+        val minTouchSizePx = (48 * density).toInt()
+
         for (m in 1..12) {
             val btn = Button(requireContext()).apply {
                 text = viewModel.monthNameCz(m).uppercase()
@@ -106,6 +109,9 @@ class HomeFragment : Fragment() {
                 // černé tlačítko s bílým textem
                 setBackgroundColor(0xFF000000.toInt())
                 setTextColor(0xFFFFFFFF.toInt())
+
+                minWidth = minTouchSizePx
+                minHeight = minTouchSizePx
 
                 // mezery mezi tlačítky
                 val params = LinearLayout.LayoutParams(
