@@ -2,11 +2,12 @@ package com.example.svatkyapp.ui.calendar
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.svatkyapp.R
 
-class DayEntryAdapter : RecyclerView.Adapter<DayEntryViewHolder>() {
+class DayEntryAdapter : RecyclerView.Adapter<DayEntryAdapter.DayEntryViewHolder>() {
 
     private var items: List<DayEntry> = emptyList()
 
@@ -26,14 +27,29 @@ class DayEntryAdapter : RecyclerView.Adapter<DayEntryViewHolder>() {
     }
 
     override fun getItemCount(): Int = items.size
-}
+    inner class DayEntryViewHolder(private val root: ViewGroup) :
+        RecyclerView.ViewHolder(root) {
+        private val textDate: TextView = root.findViewById(R.id.text_date)
+        private val textName: TextView = root.findViewById(R.id.text_name)
+        private val favButton: ImageButton = root.findViewById(R.id.button_favorite)
+        private var isFavorite = false
 
-class DayEntryViewHolder(private val root: ViewGroup) : RecyclerView.ViewHolder(root) {
-    private val textDate: TextView = root.findViewById(R.id.text_date)
-    private val textName: TextView = root.findViewById(R.id.text_name)
+        fun bind(item: DayEntry) {
+            textDate.text = item.dateDisplay
+            textName.text = item.name
 
-    fun bind(item: DayEntry) {
-        textDate.text = item.dateDisplay
-        textName.text = item.name
+            // Výchozí ikonka
+            favButton.setImageResource(
+                if (isFavorite) R.drawable.ic_favorites
+                else R.drawable.ic_person_heart
+            )
+            favButton.setOnClickListener {
+                isFavorite = !isFavorite
+                favButton.setImageResource(
+                    if (isFavorite) R.drawable.ic_favorites
+                    else R.drawable.ic_person_heart
+                )
+            }
+        }
     }
 }
