@@ -68,7 +68,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
-                android:textSize="16sp"
+                android:textSize="25sp"
                 android:layout_marginTop="4dp"
                 android:layout_gravity="center_horizontal"
                 android:textAlignment="center" />
@@ -128,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
-                android:textSize="16sp"
+                android:textSize="25sp"
                 android:layout_marginTop="4dp"
                 android:layout_gravity="center_horizontal"
                 android:textAlignment="center" />
