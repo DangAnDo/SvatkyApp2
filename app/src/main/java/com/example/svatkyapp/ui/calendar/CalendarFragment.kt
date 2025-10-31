@@ -1,4 +1,4 @@
-package com.example.svatkyapp.ui.home
+package com.example.svatkyapp.ui.calendar
 
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +17,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class HomeFragment : Fragment() {
+class CalendarFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
     private lateinit var blockCalendar: LinearLayout
@@ -37,7 +37,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
 
-        val root = inflater.inflate(R.layout.fragment_home, container, false)
+        val root = inflater.inflate(R.layout.fragment_calendar, container, false)
         blockCalendar = root.findViewById(R.id.block_calendar_mode)
         blockList = root.findViewById(R.id.block_list_mode)
         datePicker = root.findViewById(R.id.date_picker)
