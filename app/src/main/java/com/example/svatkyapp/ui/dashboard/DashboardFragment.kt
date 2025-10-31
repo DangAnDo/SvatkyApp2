@@ -30,6 +30,9 @@ class DashboardFragment : Fragment() {
         val inputDate = view.findViewById<EditText>(R.id.inputDate)
         val buttonSearchByDate = view.findViewById<Button>(R.id.buttonSearchByDate)
         val textResultDate = view.findViewById<TextView>(R.id.textResultDate)
+        val inputName = view.findViewById<EditText>(R.id.inputName)
+        val buttonSearchByName = view.findViewById<Button>(R.id.buttonSearchByName)
+        val textResultName = view.findViewById<TextView>(R.id.textResultName)
 
         // Podle data
         buttonSearchByDate.setOnClickListener {
@@ -41,6 +44,18 @@ class DashboardFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.resultDate.collectLatest { result ->
                 textResultDate.text = result ?: ""
+            }
+        }
+
+        // Podle jména
+        buttonSearchByName.setOnClickListener {
+            viewModel.inputName = inputName.text.toString()
+            viewModel.searchByName()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.resultName.collectLatest { result ->
+                textResultName.text = result ?: ""
             }
         }
     }
