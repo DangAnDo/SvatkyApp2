@@ -16,6 +16,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.svatkyapp.data.FavoriteRepository
 
 class CalendarFragment : Fragment() {
 
@@ -29,6 +30,7 @@ class CalendarFragment : Fragment() {
     private lateinit var monthButtonsContainer: LinearLayout
     private lateinit var recyclerDays: RecyclerView
     private lateinit var adapter: DayEntryAdapter
+    private lateinit var favoriteRepository: FavoriteRepository
 
     @RequiresApi(Build.VERSION_CODES.O) // kvůli java.time.LocalDate
     override fun onCreateView(
@@ -46,8 +48,8 @@ class CalendarFragment : Fragment() {
         btnShowCalendar = root.findViewById(R.id.btn_show_calendar)
         monthButtonsContainer = root.findViewById(R.id.month_buttons_container)
         recyclerDays = root.findViewById(R.id.recycler_days)
-
-        adapter = DayEntryAdapter()
+        favoriteRepository = FavoriteRepository(requireContext())
+        adapter = DayEntryAdapter(favoriteRepository)
         recyclerDays.layoutManager = LinearLayoutManager(requireContext())
         recyclerDays.adapter = adapter
 

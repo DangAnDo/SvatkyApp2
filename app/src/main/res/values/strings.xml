@@ -14,6 +14,7 @@
     <!-- Řádkový kalendář -->
     <string name="select_month">Vyber měsíc:</string>
     <string name="btn_show_classic_calendar">Zobrazit klasický kalendář</string>
+    <string name="add_to_favorites">Přidat do oblíbených</string>
 
     <!-- Vyhledavání -->
     <string name="hint_date">Zadejte datum (DD.MM.)</string>
