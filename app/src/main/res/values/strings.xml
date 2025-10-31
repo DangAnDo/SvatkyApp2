@@ -15,4 +15,12 @@
     <string name="select_month">Vyber měsíc:</string>
     <string name="btn_show_classic_calendar">Zobrazit klasický kalendář</string>
 
+    <!-- Vyhledavání -->
+    <string name="hint_date">Zadejte datum (DD.MM.)</string>
+    <string name="btn_search_by_date">Vyhledat podle data</string>
+    <string name="label_nameday">Svátek má:</string>
+    <string name="hint_name">Zadejte jméno</string>
+    <string name="btn_search_by_name">Vyhledat podle jména</string>
+    <string name="label_date_of_nameday">Datum svátku:</string>
+
 </resources>

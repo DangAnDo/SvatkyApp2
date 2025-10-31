@@ -1,4 +1,4 @@
-package com.example.svatkyapp.ui.dashboard
+package com.example.svatkyapp.ui.search
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,15 +13,15 @@ import androidx.lifecycle.lifecycleScope
 import com.example.svatkyapp.R
 import kotlinx.coroutines.launch
 
-class DashboardFragment : Fragment() {
-    private val viewModel: DashboardViewModel by viewModels()
+class SearchFragment : Fragment() {
+    private val viewModel: SearchViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_dashboard, container, false)
+        return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
