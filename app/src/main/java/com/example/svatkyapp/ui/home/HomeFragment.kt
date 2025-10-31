@@ -10,7 +10,6 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.example.svatkyapp.R
 import java.time.LocalDate
 import android.widget.Button
@@ -21,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels()
-
-    private lateinit var calendarWrapper: LinearLayout
     private lateinit var blockCalendar: LinearLayout
     private lateinit var blockList: LinearLayout
     private lateinit var datePicker: DatePicker
@@ -41,8 +38,6 @@ class HomeFragment : Fragment() {
     ): View {
 
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-
-        calendarWrapper = root.findViewById(R.id.calendar_wrapper)
         blockCalendar = root.findViewById(R.id.block_calendar_mode)
         blockList = root.findViewById(R.id.block_list_mode)
         datePicker = root.findViewById(R.id.date_picker)
@@ -78,23 +73,22 @@ class HomeFragment : Fragment() {
         viewModel.namedayToday.observe(viewLifecycleOwner) { name ->
             textNamedayValue.text = name ?: "..."
         }
-
-        viewModel.rowNamedays.observe(viewLifecycleOwner, Observer { list ->
+        viewModel.rowNamedays.observe(viewLifecycleOwner) { list ->
             adapter.submitList(list)
-        })
+        }
 
-        viewModel.showRowView.observe(viewLifecycleOwner, Observer { showRow ->
+        // přepínání zobrazení mezi "klasický kalendář" a "řádkový kalendář"
+        viewModel.showRowView.observe(viewLifecycleOwner) { showRow ->
             if (showRow == true) {
-                // řádkový kalendář
-                calendarWrapper.visibility = View.GONE   // ⬅️ schovej celý wrapper včetně mezery nahoře
+                // řádkový kalendář zapnout
+                blockCalendar.visibility = View.GONE
                 blockList.visibility = View.VISIBLE
             } else {
-                // klasický kalendář
-                calendarWrapper.visibility = View.VISIBLE
+                // klasický kalendář zpět
+                blockCalendar.visibility = View.VISIBLE
                 blockList.visibility = View.GONE
             }
-        })
-
+        }
         return root
     }
 
@@ -123,6 +117,7 @@ class HomeFragment : Fragment() {
 
                 setOnClickListener {
                     viewModel.loadLinearNamedays(m)
+                    viewModel.showRowView.value = true
                 }
             }
 
