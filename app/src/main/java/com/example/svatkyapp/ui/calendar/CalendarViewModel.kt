@@ -1,4 +1,4 @@
-package com.example.svatkyapp.ui.home
+package com.example.svatkyapp.ui.calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi

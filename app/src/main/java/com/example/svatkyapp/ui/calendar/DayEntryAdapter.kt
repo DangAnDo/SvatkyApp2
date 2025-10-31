@@ -1,4 +1,4 @@
-package com.example.svatkyapp.ui.home
+package com.example.svatkyapp.ui.calendar
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
