@@ -1,5 +1,6 @@
 package com.example.svatkyapp
 
+import android.content.Context
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
@@ -15,10 +16,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    override fun attachBaseContext(newBase: Context) {
+        val localizedContext = LocaleHelper.wrapContext(newBase, "cs", "CZ")
+        super.attachBaseContext(localizedContext)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        Locale.setDefault(Locale("cs", "CZ"))
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
