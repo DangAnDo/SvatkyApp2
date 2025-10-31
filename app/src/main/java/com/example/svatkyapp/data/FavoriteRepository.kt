@@ -32,4 +32,7 @@ class FavoriteRepository(context: Context) {
         }
         return nowFavorite
     }
+    fun getAllFavorites(): Set<String> {
+        return getSet()
+    }
 }
