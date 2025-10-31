@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">SvatkyApp</string>
+
+    <!-- Spodní navigace -->
     <string name="title_calendar">Kalendář</string>
     <string name="title_search">Vyhledávání</string>
     <string name="title_favorites">Oblíbené</string>
+
+    <!-- Klasický kalendář -->
+    <string name="nameday_title">Svátek má:</string>
+    <string name="nameday_placeholder">---</string>
+    <string name="btn_show_row_calendar">Zobrazit řádkový kalendář</string>
+
+    <!-- Řádkový kalendář -->
+    <string name="select_month">Vyber měsíc:</string>
+    <string name="btn_show_classic_calendar">Zobrazit klasický kalendář</string>
+
 </resources>
