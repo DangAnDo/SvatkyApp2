@@ -1,4 +1,4 @@
-package com.example.svatkyapp.ui.dashboard
+package com.example.svatkyapp.ui.search
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,7 +10,7 @@ import com.example.svatkyapp.data.NamedayApiService
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 
-class DashboardViewModel : ViewModel() {
+class SearchViewModel : ViewModel() {
 
     var inputDate: String = ""
     var inputName: String = ""
