@@ -51,11 +51,7 @@ class DashboardViewModel : ViewModel() {
             return
         }
         viewModelScope.launch {
-            val apiName = try {
-                NamedayApiService.getNamedayForDate(formatted)
-            } catch (e: Exception) {
-                null
-            }
+            val apiName = NamedayApiService.getNamedayForDate(formatted)
             _resultDate.value = apiName ?: "Jméno nenalezeno pro zadané datum."
         }
     }
@@ -71,15 +67,25 @@ class DashboardViewModel : ViewModel() {
 
     // Regex na datum
     private fun formatDateWithYear(raw: String): String? {
-        val regex = Regex("""^\d{1,2}\.\d{1,2}\.?$""")
-        if (!regex.matches(raw)) return null
+        val regex = Regex("""^(\d{1,2})\.(\d{1,2})\.?$""")
+        val match = regex.matchEntire(raw.trim()) ?: return null
 
-        val parts = raw.removeSuffix(".").split(".")
-        if (parts.size != 2) return null
+        val day = match.groupValues[1].toInt()
+        val month = match.groupValues[2].toInt()
 
-        val day = parts[0].padStart(2, '0')
-        val month = parts[1].padStart(2, '0')
+        if (month !in 1..12) return null
+        val maxDayInMonth = when (month) {
+            1, 3, 5, 7, 8, 10, 12 -> 31
+            4, 6, 9, 11 -> 30
+            2 -> 29
+            else -> 0
+        }
+        if (day !in 1..maxDayInMonth) return null
+
+        val dd = day.toString().padStart(2, '0')
+        val mm = month.toString().padStart(2, '0')
         val fixedYear = "2024"
-        return "$fixedYear-$month-$day"
+
+        return "$fixedYear-$mm-$dd"
     }
 }
