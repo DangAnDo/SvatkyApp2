@@ -73,5 +73,66 @@
                 android:layout_gravity="center_horizontal"
                 android:textAlignment="center" />
         </LinearLayout>
+
+        <!-- Oddělovač -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:background="#00000000" />
+
+        <!-- Pole pro jméno -->
+        <EditText
+            android:id="@+id/inputName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFF"
+            android:hint="Zadejte jméno"
+            android:padding="15dp"
+            android:textSize="20sp"
+            android:textColor="#000000"
+            android:textColorHint="#565656" />
+
+        <!-- Tlačítko -->
+        <Button
+            android:id="@+id/buttonSearchByName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vyhledat podle jména"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#000000"
+            android:layout_marginTop="4dp" />
+
+        <!-- Výsledek podle jména -->
+        <LinearLayout
+            android:id="@+id/resultNameCard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#1a1a1a"
+            android:padding="20dp"
+            android:layout_marginTop="8dp">
+
+            <!-- Datum svátku -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Datum svátku:"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center" />
+
+            <!-- Datum výsledku -->
+            <TextView
+                android:id="@+id/textResultName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:layout_marginTop="4dp"
+                android:layout_gravity="center_horizontal"
+                android:textAlignment="center" />
+        </LinearLayout>
+
     </LinearLayout>
 </ScrollView>

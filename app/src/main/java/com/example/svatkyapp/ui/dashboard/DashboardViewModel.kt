@@ -8,11 +8,13 @@ class DashboardViewModel : ViewModel() {
 
     // vstupy
     var inputDate: String = ""
+    var inputName: String = ""
 
     // výstupy
     private val _resultDate = MutableStateFlow<String?>(null)
     val resultDate: StateFlow<String?> get() = _resultDate
     private val _resultName = MutableStateFlow<String?>(null)
+    val resultName: StateFlow<String?> get() = _resultName
 
     fun searchByDate() {
         if (inputDate.isBlank()) {
@@ -22,5 +24,15 @@ class DashboardViewModel : ViewModel() {
 
         // TODO: API
         _resultDate.value = "funguje"
+    }
+
+    fun searchByName() {
+        if (inputName.isBlank()) {
+            _resultName.value = "Zadejte prosím jméno."
+            return
+        }
+
+        // TODO: add json list
+        _resultName.value = "funguje"
     }
 }
