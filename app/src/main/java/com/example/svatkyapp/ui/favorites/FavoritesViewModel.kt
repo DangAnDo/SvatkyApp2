@@ -1,4 +1,4 @@
-package com.example.svatkyapp.ui.notifications
+package com.example.svatkyapp.ui.favorites
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

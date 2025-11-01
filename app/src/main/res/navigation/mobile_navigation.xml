@@ -18,8 +18,8 @@
         tools:layout="@layout/fragment_search" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.svatkyapp.ui.notifications.NotificationsFragment"
+        android:id="@+id/navigation_favorites"
+        android:name="com.example.svatkyapp.ui.favorites.FavoritesFragment"
         android:label="@string/title_favorites"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_favorites" />
 </navigation>

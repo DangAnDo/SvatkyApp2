@@ -1,4 +1,4 @@
-package com.example.svatkyapp.ui.notifications
+package com.example.svatkyapp.ui.favorites
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.svatkyapp.R
 import com.example.svatkyapp.data.FavoriteRepository
 
-class NotificationsFragment : Fragment() {
+class FavoritesFragment : Fragment() {
 
     private lateinit var viewModel: NotificationsViewModel
     private lateinit var recyclerFavorites: RecyclerView
@@ -26,7 +26,7 @@ class NotificationsFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View {
 
-        val root = inflater.inflate(R.layout.fragment_notifications, container, false)
+        val root = inflater.inflate(R.layout.fragment_favorites, container, false)
 
         recyclerFavorites = root.findViewById(R.id.recycler_favorites)
         emptyText = root.findViewById(R.id.text_empty)
