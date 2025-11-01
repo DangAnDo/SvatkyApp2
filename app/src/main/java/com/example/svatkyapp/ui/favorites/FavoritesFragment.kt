@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.svatkyapp.R
 import com.example.svatkyapp.data.FavoriteRepository
-
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 class FavoritesFragment : Fragment() {
 
     private lateinit var viewModel: NotificationsViewModel
@@ -18,7 +19,6 @@ class FavoritesFragment : Fragment() {
     private lateinit var emptyText: TextView
     private lateinit var adapter: FavoriteAdapter
     private lateinit var favoriteRepository: FavoriteRepository
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +34,6 @@ class FavoritesFragment : Fragment() {
         viewModel = NotificationsViewModel(favoriteRepository)
 
         adapter = FavoriteAdapter(
-            items = emptyList(),
             onLongPressRemove = { item ->
                 viewModel.removeFavorite(item)
             }
@@ -50,7 +49,7 @@ class FavoritesFragment : Fragment() {
             } else {
                 emptyText.visibility = View.GONE
                 recyclerFavorites.visibility = View.VISIBLE
-                adapter.updateData(favoriteItems)
+                adapter.submitList(favoriteItems)
             }
         }
 
@@ -62,14 +61,8 @@ class FavoritesFragment : Fragment() {
 
     // Adapter pro oblíbené položky
     class FavoriteAdapter(
-        private var items: List<FavoriteItem>,
         private val onLongPressRemove: (FavoriteItem) -> Unit
-    ) : RecyclerView.Adapter<FavoriteAdapter.FavViewHolder>() {
-
-        fun updateData(newItems: List<FavoriteItem>) {
-            items = newItems
-            notifyDataSetChanged()
-        }
+    ) : ListAdapter<FavoriteItem, FavoriteAdapter.FavViewHolder>(DiffCallback) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavViewHolder {
             val view = LayoutInflater.from(parent.context)
@@ -78,10 +71,8 @@ class FavoritesFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: FavViewHolder, position: Int) {
-            holder.bind(items[position])
+            holder.bind(getItem(position))
         }
-
-        override fun getItemCount(): Int = items.size
 
         class FavViewHolder(
             private val root: ViewGroup,
@@ -100,6 +91,14 @@ class FavoritesFragment : Fragment() {
                     onLongPressRemove(item)
                     true
                 }
+            }
+        }
+        companion object DiffCallback : DiffUtil.ItemCallback<FavoriteItem>() {
+            override fun areItemsTheSame(oldItem: FavoriteItem, newItem: FavoriteItem): Boolean {
+                return oldItem.key == newItem.key
+            }
+            override fun areContentsTheSame(oldItem: FavoriteItem, newItem: FavoriteItem): Boolean {
+                return oldItem == newItem
             }
         }
     }
