@@ -9,7 +9,7 @@
         android:id="@+id/text_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Žádné oblíbené"
+        android:text="@string/no_favorites"
         android:gravity="center"
         android:visibility="gone"
         android:textSize="16sp"
@@ -20,11 +20,10 @@
         android:id="@+id/help_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Podržení položky odstraníte"
+        android:text="@string/delete_favorites"
         android:textSize="12sp"
         android:textColor="@android:color/darker_gray"
         android:paddingBottom="8dp"/>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_favorites"

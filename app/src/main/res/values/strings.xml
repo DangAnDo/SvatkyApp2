@@ -24,4 +24,8 @@
     <string name="btn_search_by_name">Vyhledat podle jména</string>
     <string name="label_date_of_nameday">Datum svátku:</string>
 
+    <!-- Oblíbení -->
+    <string name="no_favorites">Žádné oblíbené:</string>
+    <string name="delete_favorites">Podržením položky ji odstraníte</string>
+
 </resources>

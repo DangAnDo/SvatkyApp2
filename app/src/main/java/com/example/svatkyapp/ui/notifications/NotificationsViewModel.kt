@@ -4,6 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.svatkyapp.data.FavoriteRepository
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class NotificationsViewModel(
     private val favoriteRepository: FavoriteRepository
@@ -11,24 +14,35 @@ class NotificationsViewModel(
 
     private val _favorites = MutableLiveData<List<FavoriteItem>>()
     val favorites: LiveData<List<FavoriteItem>> = _favorites
-
     fun loadFavorites() {
         val data = favoriteRepository
             .getAllFavorites()
             .map { key ->
                 val parts = key.split("|")
-                val date = parts.getOrNull(0) ?: ""
+                val fullDate = parts.getOrNull(0) ?: ""
                 val name = parts.getOrNull(1) ?: ""
-                FavoriteItem(date = date, name = name, key = key)
+
+                // zobrazí jen den a měsíc
+                val displayDate = fullDate.substring(0, 6)
+
+                FavoriteItem(date = displayDate, name = name, key = key)
             }
+            // Řazení
+            .sortedWith(
+                compareBy<FavoriteItem> {
+                    val parts = it.key.split("|")[0].split(".")
+                    parts.getOrNull(1)?.toIntOrNull() ?: 0 // měsíc
+                }.thenBy {
+                    val parts = it.key.split("|")[0].split(".")
+                    parts.getOrNull(0)?.toIntOrNull() ?: 0 // den
+                }
+            )
 
         _favorites.value = data
     }
-    fun removeFavorite(item: FavoriteItem) {
-        // smažeme z persistentní paměti
-        favoriteRepository.removeFavorite(item.key)
 
-        // znovu načteme seznam, aby se UI aktualizovalo
+    fun removeFavorite(item: FavoriteItem) {
+        favoriteRepository.removeFavorite(item.key)
         loadFavorites()
     }
 }
