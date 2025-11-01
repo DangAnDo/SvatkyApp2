@@ -85,18 +85,20 @@ class SearchViewModel(
             return
         }
 
-        val rawDayMonth = dates.first()
-        val displayDate = buildDisplayDate(rawDayMonth) ?: run {
-            onError("Nepodařilo se zpracovat datum.")
-            return
+        val addedAny = dates.mapNotNull { rawDayMonth ->
+            val displayDate = buildDisplayDate(rawDayMonth) ?: return@mapNotNull null
+            val favKey = "$displayDate|$rawName"
+            if (favoriteRepository.isFavorite(favKey)) {
+                null
+            } else {
+                favoriteRepository.toggleFavorite(favKey)
+                favKey
+            }
         }
 
-        val favKey = "$displayDate|$rawName"
-
-        if (favoriteRepository.isFavorite(favKey)) {
+        if (addedAny.isEmpty()) {
             onAlreadyExists("$rawName už je v oblíbených")
         } else {
-            favoriteRepository.toggleFavorite(favKey)
             onSuccess("$rawName byl přidán do oblíbených")
         }
     }
@@ -144,10 +146,6 @@ class SearchViewModel(
 
         val dd = day.toString().padStart(2, '0')
         val mm = month.toString().padStart(2, '0')
-
-        // výsledný formát MUSÍ sedět tomu, co kalendář zobrazuje v `DayEntry.dateDisplay`
-        // ty používáš czFormatter = "dd.MM.yyyy" → přesně "14.08.2025"
         return "$dd.$mm.$year"
     }
-
 }

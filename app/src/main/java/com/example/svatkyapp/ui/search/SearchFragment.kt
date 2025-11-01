@@ -116,7 +116,7 @@ class SearchFragment : Fragment() {
         // výchozí hodnoty = dnešní den a měsíc
         val cal = Calendar.getInstance()
         val startDay = cal.get(Calendar.DAY_OF_MONTH)
-        val startMonth = cal.get(Calendar.MONTH) + 1 // MONTH je 0-based
+        val startMonth = cal.get(Calendar.MONTH) + 1
 
         // nastav Month picker
         pickerMonth.minValue = 1
@@ -141,7 +141,6 @@ class SearchFragment : Fragment() {
             }
         }
 
-        // OK -> vrátíme řetězec DD.MM., zavřeme dialog
         btnOk.setOnClickListener {
             val chosenDay = pickerDay.value
             val chosenMonth = pickerMonth.value
