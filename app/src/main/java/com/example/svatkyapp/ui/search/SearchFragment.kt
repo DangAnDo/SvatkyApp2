@@ -12,9 +12,20 @@ import com.example.svatkyapp.R
 import kotlinx.coroutines.launch
 import android.app.Dialog
 import java.util.Calendar
+import com.example.svatkyapp.data.FavoriteRepository
+
 
 class SearchFragment : Fragment() {
-    private val viewModel: SearchViewModel by viewModels()
+    private val viewModel: SearchViewModel by viewModels {
+        object : androidx.lifecycle.ViewModelProvider.Factory {
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                val repo = FavoriteRepository(requireContext())
+                @Suppress("UNCHECKED_CAST")
+                return SearchViewModel(repo) as T
+            }
+        }
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +45,7 @@ class SearchFragment : Fragment() {
         val buttonSearchByName = view.findViewById<Button>(R.id.buttonSearchByName)
         val textResultName = view.findViewById<TextView>(R.id.textResultName)
         val buttonPickDate = view.findViewById<ImageButton>(R.id.buttonPickDate)
+        val buttonPerson = view.findViewById<ImageButton>(R.id.buttonPerson)
 
         buttonPickDate.setOnClickListener {
             showDayMonthPicker { selectedDateString ->
@@ -66,6 +78,22 @@ class SearchFragment : Fragment() {
                 textResultName.text = result ?: ""
             }
         }
+
+        buttonPerson.setOnClickListener {
+            viewModel.inputName = inputName.text.toString()
+
+            viewModel.addFavoriteFromInputName(
+                onError = { msg ->
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                },
+                onSuccess = { msg ->
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                },
+                onAlreadyExists = { msg ->
+                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
     }
     private fun showDayMonthPicker(onPicked: (selectedDate: String) -> Unit) {
         val dialog = Dialog(requireContext())
@@ -80,7 +108,7 @@ class SearchFragment : Fragment() {
             return when (month) {
                 1, 3, 5, 7, 8, 10, 12 -> 31
                 4, 6, 9, 11 -> 30
-                2 -> 29 // bereme 29 kvůli přestupným rokům; pro svátky je to OK
+                2 -> 29
                 else -> 31
             }
         }

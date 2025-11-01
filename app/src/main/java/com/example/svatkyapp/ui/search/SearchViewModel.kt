@@ -9,8 +9,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.svatkyapp.data.NamedayApiService
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
+import com.example.svatkyapp.data.FavoriteRepository
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(
+    private val favoriteRepository: FavoriteRepository
+) : ViewModel() {
 
     var inputDate: String = ""
     var inputName: String = ""
@@ -65,6 +68,39 @@ class SearchViewModel : ViewModel() {
         _resultName.value = dates?.joinToString(", ") ?: "Datum nenalezeno pro zadané jméno."
     }
 
+    fun addFavoriteFromInputName(
+        onError: (String) -> Unit = {},
+        onSuccess: (String) -> Unit = {},
+        onAlreadyExists: (String) -> Unit = {}
+    ) {
+        val rawName = inputName.trim()
+        if (rawName.isBlank()) {
+            onError("Zadejte prosím jméno.")
+            return
+        }
+
+        val dates = namedays[rawName.lowercase()]
+        if (dates.isNullOrEmpty()) {
+            onError("Tohle jméno jsem nenašla v kalendáři.")
+            return
+        }
+
+        val rawDayMonth = dates.first()
+        val displayDate = buildDisplayDate(rawDayMonth) ?: run {
+            onError("Nepodařilo se zpracovat datum.")
+            return
+        }
+
+        val favKey = "$displayDate|$rawName"
+
+        if (favoriteRepository.isFavorite(favKey)) {
+            onAlreadyExists("$rawName už je v oblíbených")
+        } else {
+            favoriteRepository.toggleFavorite(favKey)
+            onSuccess("$rawName byl přidán do oblíbených")
+        }
+    }
+
     // Regex na datum
     private fun formatDateWithYear(raw: String): String? {
         val regex = Regex("""^(\d{1,2})\.(\d{1,2})\.?$""")
@@ -88,4 +124,30 @@ class SearchViewModel : ViewModel() {
 
         return "$fixedYear-$mm-$dd"
     }
+
+    private fun buildDisplayDate(dayMonth: String, year: String = "2025"): String? {
+        // očekává "14.08." nebo "14.08"
+        val regex = Regex("""^(\d{1,2})\.(\d{1,2})\.?$""")
+        val m = regex.matchEntire(dayMonth.trim()) ?: return null
+
+        val day = m.groupValues[1].toInt()
+        val month = m.groupValues[2].toInt()
+
+        // validace dnů v měsíci
+        val maxDay = when (month) {
+            1,3,5,7,8,10,12 -> 31
+            4,6,9,11 -> 30
+            2 -> 29
+            else -> return null
+        }
+        if (day !in 1..maxDay) return null
+
+        val dd = day.toString().padStart(2, '0')
+        val mm = month.toString().padStart(2, '0')
+
+        // výsledný formát MUSÍ sedět tomu, co kalendář zobrazuje v `DayEntry.dateDisplay`
+        // ty používáš czFormatter = "dd.MM.yyyy" → přesně "14.08.2025"
+        return "$dd.$mm.$year"
+    }
+
 }
