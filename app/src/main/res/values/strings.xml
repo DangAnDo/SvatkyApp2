@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">SvatkyApp</string>
-
     <!-- Spodní navigace -->
     <string name="title_calendar">Kalendář</string>
     <string name="title_search">Vyhledávání</string>
@@ -19,6 +18,7 @@
     <!-- Vyhledavání -->
     <string name="hint_date">Zadejte datum (DD.MM.)</string>
     <string name="btn_search_by_date">Vyhledat podle data</string>
+    <string name="select_date_icon">Vybrat datum</string>
     <string name="label_nameday">Svátek má:</string>
     <string name="hint_name">Zadejte jméno</string>
     <string name="btn_search_by_name">Vyhledat podle jména</string>
@@ -27,5 +27,9 @@
     <!-- Oblíbení -->
     <string name="no_favorites">Žádné oblíbené:</string>
     <string name="delete_favorites">Podržením položky ji odstraníte</string>
+
+    <!-- Spinner -->
+    <string name="date_choose">Vyber datum:</string>
+    <string name="confirm">Potvrdit</string>
 
 </resources>

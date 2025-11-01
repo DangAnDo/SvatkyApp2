@@ -20,20 +20,40 @@
             android:textColor="#000000"
             android:textSize="23sp" />
 
-        <!-- Pole -->
-        <EditText
-            android:id="@+id/inputDate"
+        <!-- Řádek s datem a tlačítkem kalendáře -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
-            android:hint="@string/hint_date"
-            android:padding="15dp"
-            android:textSize="20sp"
-            android:textColor="#000000"
-            android:textColorHint="#565656"
-            android:inputType="datetime"
-            android:digits="0123456789."
-            android:autofillHints="none" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <EditText
+                android:id="@+id/inputDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_date"
+                android:textSize="20sp"
+                android:padding="15dp"
+                android:inputType="datetime"
+                android:digits="0123456789."
+                android:textColor="#000000"
+                android:autofillHints="date"
+                android:textColorHint="#565656"
+                android:backgroundTint="#FFFFFF" />
+
+            <ImageButton
+                android:id="@+id/buttonPickDate"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/select_date_icon"
+                android:src="@drawable/ic_calendar" />
+        </LinearLayout>
+
+
 
         <!-- Tlačítko -->
         <Button
