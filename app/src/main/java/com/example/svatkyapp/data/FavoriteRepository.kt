@@ -35,4 +35,12 @@ class FavoriteRepository(context: Context) {
     fun getAllFavorites(): Set<String> {
         return getSet()
     }
+
+    fun removeFavorite(key: String) {
+        val set = getSet()
+        set.remove(key)
+        prefs.edit {
+            putStringSet(keyset, set)
+        }
+    }
 }

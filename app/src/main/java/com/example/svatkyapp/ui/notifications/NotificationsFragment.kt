@@ -17,6 +17,8 @@ class NotificationsFragment : Fragment() {
     private lateinit var recyclerFavorites: RecyclerView
     private lateinit var emptyText: TextView
     private lateinit var adapter: FavoriteAdapter
+    private lateinit var favoriteRepository: FavoriteRepository
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,20 +28,21 @@ class NotificationsFragment : Fragment() {
 
         val root = inflater.inflate(R.layout.fragment_notifications, container, false)
 
-        // najdeme view prvky z layoutu
         recyclerFavorites = root.findViewById(R.id.recycler_favorites)
         emptyText = root.findViewById(R.id.text_empty)
-
-        // repo -> viewmodel
-        val favoriteRepository = FavoriteRepository(requireContext())
+        favoriteRepository = FavoriteRepository(requireContext())
         viewModel = NotificationsViewModel(favoriteRepository)
 
-        // recycler view setup
-        adapter = FavoriteAdapter(emptyList())
+        adapter = FavoriteAdapter(
+            items = emptyList(),
+            onLongPressRemove = { item ->
+                viewModel.removeFavorite(item)
+            }
+        )
+
         recyclerFavorites.layoutManager = LinearLayoutManager(requireContext())
         recyclerFavorites.adapter = adapter
 
-        // pozorujeme data z viewmodelu
         viewModel.favorites.observe(viewLifecycleOwner) { favoriteItems ->
             if (favoriteItems.isEmpty()) {
                 emptyText.visibility = View.VISIBLE
@@ -59,7 +62,8 @@ class NotificationsFragment : Fragment() {
 
     // Adapter pro oblíbené položky
     class FavoriteAdapter(
-        private var items: List<FavoriteItem>
+        private var items: List<FavoriteItem>,
+        private val onLongPressRemove: (FavoriteItem) -> Unit
     ) : RecyclerView.Adapter<FavoriteAdapter.FavViewHolder>() {
 
         fun updateData(newItems: List<FavoriteItem>) {
@@ -70,7 +74,7 @@ class NotificationsFragment : Fragment() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavViewHolder {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_favorite, parent, false) as ViewGroup
-            return FavViewHolder(view)
+            return FavViewHolder(view, onLongPressRemove)
         }
 
         override fun onBindViewHolder(holder: FavViewHolder, position: Int) {
@@ -79,13 +83,23 @@ class NotificationsFragment : Fragment() {
 
         override fun getItemCount(): Int = items.size
 
-        class FavViewHolder(private val root: ViewGroup) : RecyclerView.ViewHolder(root) {
+        class FavViewHolder(
+            private val root: ViewGroup,
+            private val onLongPressRemove: (FavoriteItem) -> Unit
+        ) : RecyclerView.ViewHolder(root) {
+
             private val textDate: TextView = root.findViewById(R.id.text_fav_date)
             private val textName: TextView = root.findViewById(R.id.text_fav_name)
 
             fun bind(item: FavoriteItem) {
                 textDate.text = item.date
                 textName.text = item.name
+
+                // dlouhý stisk = odebrat z oblíbených
+                root.setOnLongClickListener {
+                    onLongPressRemove(item)
+                    true
+                }
             }
         }
     }
